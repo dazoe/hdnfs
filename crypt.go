@@ -4,7 +4,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"encoding/base64"
 	"io"
 	"log"
 	"os"
@@ -30,12 +29,7 @@ func Decrypt(text, key []byte) (out []byte) {
 	cfb := cipher.NewCFBDecrypter(block, iv)
 	out = make([]byte, len(text))
 	cfb.XORKeyStream(out, text)
-	data, err := base64.StdEncoding.DecodeString(string(out))
-	if err != nil {
-		log.Println("DATA ERROR", err)
-		return nil
-	}
-	return data
+	return out
 }
 
 func GetKey(bytes []byte, key []byte) string {
@@ -65,14 +59,13 @@ func Encrypt(text, key []byte) []byte {
 		log.Println(err)
 		return nil
 	}
-	b := base64.StdEncoding.EncodeToString(text)
-	ciphertext := make([]byte, aes.BlockSize+len(b))
+	ciphertext := make([]byte, aes.BlockSize+len(text))
 	iv := ciphertext[:aes.BlockSize]
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		log.Println(err)
 		return nil
 	}
 	cfb := cipher.NewCFBEncrypter(block, iv)
-	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(b))
+	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(text))
 	return ciphertext
 }
