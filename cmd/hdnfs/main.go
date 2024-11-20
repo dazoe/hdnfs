@@ -22,18 +22,18 @@ var (
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Println("No enough arguments")
-		os.Exit(0)
+		return
 	}
 
 	drive = os.Args[1]
 	if drive == "" {
 		fmt.Println("drive missing")
-		os.Exit(0)
+		return
 	}
 	cmd := os.Args[2]
 	if cmd == "" {
 		fmt.Println("cmd missing")
-		os.Exit(0)
+		return
 	}
 	// fmt.Println(os.Args)
 	// fmt.Println("CMD:", cmd)
@@ -52,7 +52,7 @@ func main() {
 			startIndex, err = strconv.Atoi(os.Args[3])
 			if err != nil {
 				fmt.Println("Invalid starting index:", err)
-				os.Exit(0)
+				return
 			}
 		}
 		hdnfs.Erase(file, int64(startIndex))
@@ -63,13 +63,13 @@ func main() {
 		var path, name string
 		if len(os.Args) < 5 {
 			fmt.Println("Not enough arguments")
-			os.Exit(0)
+			return
 		}
 		if len(os.Args) > 5 {
 			index, err = strconv.Atoi(os.Args[5])
 			if err != nil {
 				fmt.Println("Index is not a valid int")
-				os.Exit(0)
+				return
 			}
 		} else {
 			index = hdnfs.OUT_OF_BOUNDS_INDEX
@@ -77,7 +77,7 @@ func main() {
 		path = os.Args[3]
 		if path == "" {
 			fmt.Println("No local file selected")
-			os.Exit(0)
+			return
 		}
 		name = os.Args[4]
 		hdnfs.Add(file, path, name, index)
@@ -85,12 +85,12 @@ func main() {
 		var path string
 		if len(os.Args) < 5 {
 			fmt.Println("Not enough arguments")
-			os.Exit(0)
+			return
 		}
 		index, err := strconv.Atoi(os.Args[3])
 		if err != nil {
 			fmt.Println("Index is not a valid int")
-			os.Exit(0)
+			return
 		}
 		path = os.Args[4]
 		hdnfs.Get(file, index, path)
@@ -98,7 +98,7 @@ func main() {
 		index, err := strconv.Atoi(os.Args[3])
 		if err != nil {
 			fmt.Println("Index is not a valid int")
-			os.Exit(0)
+			return
 		}
 		hdnfs.Del(file, index)
 	case "list":
